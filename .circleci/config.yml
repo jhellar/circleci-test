@@ -1,0 +1,25 @@
+version: 2.1
+commands:
+  publish:
+    parameters:
+      tag:
+        type: string
+    steps:
+      - run: echo << parameters.tag >>
+
+jobs:
+  test:
+    docker:
+      - image: circleci/node:lts
+    steps:
+      - checkout
+      - publish:
+          tag: "$CIRCLE_TAG"
+      - publish:
+          tag: "$(node -e \"console.log('test');\")"
+
+workflows:
+  version: 2
+  just_test:
+    jobs:
+      - test
